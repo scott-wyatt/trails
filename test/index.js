@@ -207,6 +207,24 @@ describe('Trails', () => {
 
         return eventPromise
       })
+      it('should invoke listener when listening for multiple possible events', () => {
+        const eventPromise = app.after([['test1', 'test2'], 'test3'])
+        app.emit('test1')
+        app.emit('test3')
+
+        return eventPromise
+      })
+      it('should pass event parameters to callbacks added using `onceAny`', done => {
+        const sent = { test: true }
+
+        app.onceAny('test', received => {
+          assert.equal(received, sent)
+
+          return done()
+        })
+
+        app.emit('test', sent)
+      })
     })
   })
 })
